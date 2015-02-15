@@ -1,8 +1,6 @@
 #include<stdio.h>
-#include<fcntl.h>
-#include<string.h>
 #include<stdlib.h>
-
+#include<ctype.h>
 
 int main(int argc, char **argv)
 {
@@ -13,7 +11,73 @@ int main(int argc, char **argv)
 
     while((getline(&token, &len, fp))!=-1)
     {
-        printf("%s",token);
+        i = 0;
+        while((c = token[i++]) != '\n')
+        {
+            switch(c)
+            {
+            case '+':
+                printf("<operator,addition>");
+                break;
+            case '-':
+                printf("<operator,subtraction>");
+                break;
+            case '/':
+                printf("<operator,division>");
+                break;
+            case '*':
+                printf("<operator,multiplication>");
+                break;
+            case '=':
+                if(token[i] == '=') {printf("<operator,isEqualTo>");++i;}
+                else printf("<operator,assignment>");
+                break;
+            case '<':
+                if(token[i] == '=') {printf("<operator,isLessThanOrEqualTo>");++i;}
+                else printf("<operator,isLessThan>");
+                break;
+            case '>':
+                if(token[i] == '=') {printf("<operator,isGreaterThanOrEqualTo>");++i;}
+                else printf("<operator,isGreaterThan>");
+                break;
+            case '!':
+                printf("<operator,isNotEqual>");
+                ++i;
+                break;
+            case '^':
+                printf("<operator,xor>");
+                break;
+            case ' ':
+                continue;
+            default:
+                if(isalpha(c))
+                {
+                    printf("<identifier,");
+                    while(isalnum(c) || c == '_')
+                    {
+                        printf("%c",c);
+                        c = token[i++];
+                    }
+                    printf(">");
+                    i--;
+                }
+                else
+                {
+                    if(isdigit(c))
+                    {
+                        printf("<number,");
+                        while(isdigit(c))
+                        {
+                            printf("%c",c);
+                            c = token[i++];
+                        }
+                        printf(">");
+                        --i;
+                    }
+                }
+            }
+        }
+        printf("\n");
     }
 
     return 0;
