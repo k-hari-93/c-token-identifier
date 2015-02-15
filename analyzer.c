@@ -7,15 +7,14 @@
 int main(int argc, char **argv)
 {
     FILE *fp = fopen(argv[1],"r");
-    char line, c;
+    char *token = NULL , c;
     int i = 0;
+    size_t len = 0;
 
-    while((line = (char)fgetc(fp))!=EOF)
+    while((getline(&token, &len, fp))!=-1)
     {
-        printf("%c",line);
+        printf("%s",token);
     }
-    printf("\n");
-    fclose(fp);
 
     return 0;
 }
