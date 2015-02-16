@@ -29,28 +29,36 @@ int main(int argc, char **argv)
                 printf("<operator,multiplication>");
                 break;
             case '=':
-                if(token[i] == '=') {printf("<operator,isEqualTo>");++i;}
+                if(token[i] == '=') {printf("<re-operator,isEqualTo>");++i;}
                 else printf("<operator,assignment>");
                 break;
             case '<':
-                if(token[i] == '=') {printf("<operator,isLessThanOrEqualTo>");++i;}
-                else printf("<operator,isLessThan>");
+                if(token[i] == '=') {printf("<re-operator,isLessThanOrEqualTo>");++i;}
+                else printf("<re-operator,isLessThan>");
                 break;
             case '>':
-                if(token[i] == '=') {printf("<operator,isGreaterThanOrEqualTo>");++i;}
-                else printf("<operator,isGreaterThan>");
+                if(token[i] == '=') {printf("<re-operator,isGreaterThanOrEqualTo>");++i;}
+                else printf("<re-operator,isGreaterThan>");
                 break;
             case '!':
-                printf("<operator,isNotEqual>");
+                printf("<re-operator,isNotEqual>");
                 ++i;
                 break;
             case '^':
                 printf("<operator,xor>");
                 break;
+            case '|':
+                if(token[i] == '|') {printf("<lo-operator,or>");++i;}
+                else printf("<lo-operator,bitwiseOr>");
+                break;
+            case '&':
+                if(token[i] == '&') {printf("<lo-operator,and>");++i;}
+                else printf("<lo-operator,bitwiseAnd>");
+                break;
             case ' ':
                 continue;
             default:
-                if(isalpha(c))
+                if(isalpha(c) || c == '_')
                 {
                     printf("<identifier,");
                     while(isalnum(c) || c == '_')
