@@ -5,9 +5,14 @@
 
 int main(int argc, char **argv)
 {
+    if(argc!=3)
+    {
+        printf("Error:Usage is '%s <inFile> <outFile>'\n",argv[0]);
+        return 1;
+    }
+    FILE *fp_i = fopen(argv[1],"r"), *fp_o = fopen(argv[2],"w");
     regex_t intg,flt,expnz;
     regmatch_t _intg[1],_flt[1], _expn[1];
-    FILE *fp = fopen(argv[1],"r");
     char *token = NULL, *buf = NULL, *_match = NULL, c;
     int i = 0, j, w = 0, begin, end, size, integer, fl, exp;
     size_t len = 0;
@@ -16,7 +21,7 @@ int main(int argc, char **argv)
     regcomp(&flt, "([[:digit:]]+.[[:digit:]]+)", REG_EXTENDED|REG_NEWLINE);
     regcomp(&expnz, "([[:digit:]]+.[[:digit:]]+[Ee][+-]?[[:digit:]]+)", REG_EXTENDED|REG_NEWLINE);
 
-    while((getline(&token, &len, fp))!=-1)
+    while((getline(&token, &len, fp_i))!=-1)
     {
         i = 0;
         while((c = token[i++]) != '\n')
@@ -24,56 +29,56 @@ int main(int argc, char **argv)
             switch(c)
             {
             case '+':
-                printf("<operator,addition>");
+                fprintf(fp_o,"<operator,addition>");
                 break;
             case '-':
-                printf("<operator,subtraction>");
+                fprintf(fp_o,"<operator,subtraction>");
                 break;
             case '/':
-                printf("<operator,division>");
+                fprintf(fp_o,"<operator,division>");
                 break;
             case '*':
-                printf("<operator,multiplication>");
+                fprintf(fp_o,"<operator,multiplication>");
                 break;
             case '=':
-                if(token[i] == '=') {printf("<re-operator,isEqualTo>");++i;}
-                else printf("<operator,assignment>");
+                if(token[i] == '=') {fprintf(fp_o,"<re-operator,isEqualTo>");++i;}
+                else fprintf(fp_o,"<operator,assignment>");
                 break;
             case '<':
-                if(token[i] == '=') {printf("<re-operator,isLessThanOrEqualTo>");++i;}
-                else printf("<re-operator,isLessThan>");
+                if(token[i] == '=') {fprintf(fp_o,"<re-operator,isLessThanOrEqualTo>");++i;}
+                else fprintf(fp_o,"<re-operator,isLessThan>");
                 break;
             case '>':
-                if(token[i] == '=') {printf("<re-operator,isGreaterThanOrEqualTo>");++i;}
-                else printf("<re-operator,isGreaterThan>");
+                if(token[i] == '=') {fprintf(fp_o,"<re-operator,isGreaterThanOrEqualTo>");++i;}
+                else fprintf(fp_o,"<re-operator,isGreaterThan>");
                 break;
             case '!':
-                printf("<re-operator,isNotEqual>");
+                fprintf(fp_o,"<re-operator,isNotEqual>");
                 ++i;
                 break;
             case '^':
-                printf("<operator,xor>");
+                fprintf(fp_o,"<operator,xor>");
                 break;
             case '|':
-                if(token[i] == '|') {printf("<lo-operator,or>");++i;}
-                else printf("<lo-operator,bitwiseOr>");
+                if(token[i] == '|') {fprintf(fp_o,"<lo-operator,or>");++i;}
+                else fprintf(fp_o,"<lo-operator,bitwiseOr>");
                 break;
             case '&':
-                if(token[i] == '&') {printf("<lo-operator,and>");++i;}
-                else printf("<lo-operator,bitwiseAnd>");
+                if(token[i] == '&') {fprintf(fp_o,"<lo-operator,and>");++i;}
+                else fprintf(fp_o,"<lo-operator,bitwiseAnd>");
                 break;
             case ' ':
                 continue;
             default:
                 if(isalpha(c) || c == '_')
                 {
-                    printf("<identifier,");
+                    fprintf(fp_o,"<identifier,");
                     while(isalnum(c) || c == '_')
                     {
-                        printf("%c",c);
+                        fprintf(fp_o,"%c",c);
                         c = token[i++];
                     }
-                    printf(">");
+                    fprintf(fp_o,">");
                     i--;
                 }
                 else
@@ -94,7 +99,7 @@ int main(int argc, char **argv)
                             i = i + size-1;
                             _match[w] = '\0';
                             w = 0;
-                            printf("<exponential-constant,%s>",_match);
+                            fprintf(fp_o,"<exponential-constant,%s>",_match);
                             break;
                         }
                         fl = regexec(&flt, &token[i-1], 1, _flt, 0);
@@ -111,7 +116,7 @@ int main(int argc, char **argv)
                             i = i + size-1;
                             _match[w] = '\0';
                             w = 0;
-                            printf("<floating-constant,%s>",_match);
+                            fprintf(fp_o,"<floating-constant,%s>",_match);
                             break;
                         }
                         integer = regexec(&intg, &token[i-1], 1, _intg, 0);
@@ -128,7 +133,7 @@ int main(int argc, char **argv)
                             i = i + size-1;
                             _match[w] = '\0';
                             w = 0;
-                            printf("<integer-constant,%s>",_match);
+                            fprintf(fp_o,"<integer-constant,%s>",_match);
                             break;
                         }
                     }
@@ -136,7 +141,7 @@ int main(int argc, char **argv)
 
             }
         }
-        printf("\n");
+        fprintf(fp_o,"\n");
     }
     return 0;
 }

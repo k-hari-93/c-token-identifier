@@ -1,0 +1,7 @@
+<identifier,a><operator,addition><identifier,bb><operator,assignment><integer-constant,5>
+<identifier,bb><operator,assignment><integer-constant,5>
+<identifier,bb><operator,assignment><integer-constant,55>
+<identifier,bbc><re-operator,isGreaterThan><integer-constant,55>
+<identifier,bbc><re-operator,isLessThanOrEqualTo><identifier,a>
+<identifier,a><operator,assignment><exponential-constant,23.45e+21><operator,addition><identifier,d>
+<identifier,a><operator,assignment><floating-constant,23.45><operator,addition><identifier,d>
